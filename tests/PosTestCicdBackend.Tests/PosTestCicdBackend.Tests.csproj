@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework Condition="'$(CI)' == 'true'">net10.0</TargetFramework>
+    <TargetFramework Condition="'$(CI)' != 'true'">net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
@@ -16,8 +17,8 @@
          Without it the tests pass and report no coverage at all. -->
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <!-- Without a substitute library there is no way to isolate a
-         collaborator, so every test reaches the real one and "unit test"
-         means integration test with extra steps. -->
+     collaborator, so every test reaches the real one and "unit test"
+     means integration test with extra steps. -->
     <PackageReference Include="NSubstitute" Version="5.3.0" />
     <!-- Layering assertions run as ordinary tests, so the architecture is
          enforced by the same command as everything else rather than by a
