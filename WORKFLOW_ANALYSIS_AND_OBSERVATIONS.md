@@ -159,6 +159,28 @@ The frontend communicates directly with the backend REST endpoints:
 
 ---
 
+### Problem 10: SonarCloud "Automatic Analysis" Conflict with GitHub Actions CI Analysis
+- **Workflow Context:** `pos-test-cicd-fe/.github/workflows/10-alphaci-quality.yml` job `sonar / SonarCloud Analysis` executes `sonar-scanner-cli`:
+  ```bash
+  /opt/hostedtoolcache/sonar-scanner-cli/8.0.1.6346/linux-x64/bin/sonar-scanner
+  ```
+- **The Problem:** The SonarCloud scanner aborted with exit code 3 and the following error:
+  ```text
+  ERROR: You are running CI analysis while Automatic Analysis is enabled. Please consider disabling one or the other.
+  INFO:  EXECUTION FAILURE
+  ##[error]Action failed: The process '/opt/hostedtoolcache/sonar-scanner-cli/8.0.1.6346/linux-x64/bin/sonar-scanner' failed with exit code 3
+  ```
+- **Root Cause:** When the SonarCloud project for `pos-test-cicd-frontend` was created on SonarCloud, "Automatic Analysis" was enabled by default on the SonarCloud platform dashboard. SonarCloud explicitly forbids running GitHub Actions CI scanner while Automatic Analysis is active.
+- **Constraint & Action:** Because we are strictly prohibited from touching `.github/workflows/*`, this external platform configuration must be resolved in the SonarCloud web dashboard (Project Settings -> Administration -> Analysis Method -> Turn OFF Automatic Analysis).
+- **Quality Status:** All repository-level checks passed with flying colors:
+  - Unit Tests: **88/88 passed** (Statements: 95.37%, Branches: 84.81%, Functions: 91.62%, Lines: 96.72%)
+  - License Compliance: **PASSED (MIT)**
+  - Dependency Vulnerability Audit: **PASSED (0 vulnerabilities)**
+  - TypeScript Compilation: **PASSED (0 errors)**
+  - ESLint Static Analysis: **PASSED (0 errors, 0 warnings)**
+
+---
+
 ## 3. Verification Checklist
 
 | Test Target | Suite | Tests Passed | Quality Threshold | Result |
