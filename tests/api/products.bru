@@ -1,0 +1,21 @@
+meta {
+  name: Products
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{BASE_URL}}/api/v1/products
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("answers as json with products array", function() {
+    expect(res.headers["content-type"]).to.contain("application/json");
+    expect(res.body).to.be.an('array');
+    expect(res.body.length).to.be.greaterThan(0);
+  });
+}

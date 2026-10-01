@@ -1,0 +1,21 @@
+meta {
+  name: Categories
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{BASE_URL}}/api/v1/categories
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  test("answers as json with categories array", function() {
+    expect(res.headers["content-type"]).to.contain("application/json");
+    expect(res.body).to.be.an('array');
+    expect(res.body.length).to.be.greaterThan(0);
+  });
+}
